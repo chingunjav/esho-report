@@ -13,7 +13,7 @@ import edu.miu.shop.eshopreport.domain.DemoUser;
 import edu.miu.shop.eshopreport.service.DemoUserService;
 import net.sf.jasperreports.engine.JRException;
 
-
+@SuppressWarnings("unchecked")
 @RestController
 @RequestMapping("/demo")
 public class DemoUserController {
@@ -28,5 +28,10 @@ public class DemoUserController {
 	@GetMapping("/export/{format}")
 	private String exportReport(@PathVariable String format) throws FileNotFoundException, JRException {
 		return usrService.exportReport(format);
+	}
+	
+	@GetMapping("/test/test")
+	private String testMsg() {
+		return "Test Msg";
 	}
 }

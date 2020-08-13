@@ -33,6 +33,8 @@ public class DemoUserService {
 		users.add(new DemoUser(1,"TestUser",22,"Ub","test@mol.mn"));
 		users.add(new DemoUser(2,"TestUser",23,"Ub","test@mol.mn"));
 		users.add(new DemoUser(3,"TestUser",24,"Ub","test@mol.mn"));
+		users.add(new DemoUser(4,"TestUser",24,"Ub","test@mol.mn"));
+		users.add(new DemoUser(5,"TestUser",27,"Ub","test@mol.mn"));
 		
 		
 		return users;
