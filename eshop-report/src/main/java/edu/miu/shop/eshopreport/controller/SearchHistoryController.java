@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.net.http.HttpHeaders;
+import java.nio.file.FileSystems;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,35 +44,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/reports")
+@RequestMapping("/reports/export")
 public class SearchHistoryController {
 
 	@Autowired
 	HistorySearchServiceImpl hisService;
-//	
-//	@GetMapping("/export/html")
-//	private String exportReport() throws FileNotFoundException, JRException {
-//		return hisService.exportReport("html");
-//	}
-	
-	
-//	@GetMapping
-//	    @Path("/download")
-//	    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-//	    public Response downloadFileWithGet(@QueryParam("file") String file) {
-//	        System.out.println("Download file "+file);
-//	        File fileDownload = new File(Config.UPLOAD_FOLDER + File.separator + file);
-//	        ResponseBuilder response = Response.ok((Object) fileDownload);
-//	        response.header("Content-Disposition", "attachment;filename=" + file);
-//	        return response.build();
-//	    }
 
-	 @RequestMapping("/pdf")
+
+	@RequestMapping("/pdf")
 	public void downloadPDFResource(HttpServletRequest request, HttpServletResponse response) throws IOException, JRException {
-		 
-		hisService.exportReport("html");
-		 
-		File file = new File(System.getProperty("user.dir")+"/src/main/resources/templates/" + "searchHisReport.pdf");
+		File file = new File(hisService.exportReport("pdf"));
 		if (file.exists()) {
 			//get the mimetype
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());

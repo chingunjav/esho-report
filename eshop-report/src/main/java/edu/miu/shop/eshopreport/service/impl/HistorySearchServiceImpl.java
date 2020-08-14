@@ -71,20 +71,20 @@ public class HistorySearchServiceImpl  {
 	public String exportReport(String format) throws FileNotFoundException, JRException{
 		List<SearchHistory> userList = this.listHisReport();
 		
-		String createdURL = System.getProperty("user.dir")+"/src/main/resources/templates";
+		String createdURL = System.getProperty("user.dir") + "/pdf";
 		
-		File file = ResourceUtils.getFile("classpath:templates/searchHistory.jrxml");//ResourceUtils.getFile(resourceLocation: "classpath:usersjrxml");
+		File file = ResourceUtils.getFile("classpath:templates/searchHistory.jrxml");
 		JasperReport jasper = JasperCompileManager.compileReport(file.getAbsolutePath());
 		JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(userList);
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("createdBy","Chiba");
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasper,parameters,ds);
-		if(format.equalsIgnoreCase("html"))
+		if(format.equalsIgnoreCase("pdf"))
 		{
 			JasperExportManager.exportReportToPdfFile(jasperPrint,createdURL + "/searchHisReport.pdf");
 			
 		}
-		return "Success created:" + createdURL +"searchHisReport.xml";
+		return createdURL + "/searchHisReport.pdf";
 	}
 
 
