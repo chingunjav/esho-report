@@ -1,7 +1,9 @@
 package edu.miu.shop.eshopreport.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,10 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+
+
 import edu.miu.shop.eshopreport.domain.DemoUser;
 import edu.miu.shop.eshopreport.domain.SearchHistory;
 import edu.miu.shop.eshopreport.repository.SearchHisRepository;
 import edu.miu.shop.eshopreport.service.HistorySearchService;
+import edu.miu.shop.eshopreport.service.StorageService;
+import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -22,11 +28,24 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.util.JRSaver;
+import net.sf.jasperreports.export.Exporter;
+import net.sf.jasperreports.export.ExporterInput;
+import net.sf.jasperreports.export.HtmlExporterConfiguration;
+import net.sf.jasperreports.export.HtmlExporterOutput;
+import net.sf.jasperreports.export.HtmlReportConfiguration;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 
 @Service
 public class HistorySearchServiceImpl  {
 	@Autowired
 	SearchHisRepository hisRepo;
+	
+
+	
 	public List<SearchHistory> listHisReport(){
 		return hisRepo.findAll();
 	}
@@ -51,31 +70,26 @@ public class HistorySearchServiceImpl  {
 	
 	public String exportReport(String format) throws FileNotFoundException, JRException{
 		List<SearchHistory> userList = this.listHisReport();
-				
-		String path = "D:\\JasperReport";
-		String browserPath ="file://D:/JasperReport";
-		File file = ResourceUtils.getFile("classpath:templates/searchHistory.jrxml");//ResourceUtils.getFile(resourceLocation: "classpath:usersjrxml");
 		
+		String createdURL = System.getProperty("user.dir")+"/src/main/resources/templates";
+		
+		File file = ResourceUtils.getFile("classpath:templates/searchHistory.jrxml");//ResourceUtils.getFile(resourceLocation: "classpath:usersjrxml");
 		JasperReport jasper = JasperCompileManager.compileReport(file.getAbsolutePath());
 		JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(userList);
-		
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("createdBy","Chiba");
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasper,parameters,ds);
-		
 		if(format.equalsIgnoreCase("html"))
 		{
-			JasperExportManager.exportReportToHtmlFile(jasperPrint,path + "\\searchHisReport.html");
-			browserPath+="/usersReport.html";
+			JasperExportManager.exportReportToPdfFile(jasperPrint,createdURL + "/searchHisReport.pdf");
+			
 		}
-		if(format.equalsIgnoreCase("pdf")) {
-			JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\searchHisReport.pdf");
-			browserPath+="/usersReport.pdf";
-		}
-		
-		
-		//return "Success path: " + "<a href=\""+ browserPath + "\" target=\"_blank\" >view</a>";
-		return "Success created:" + path;
+		return "Success created:" + createdURL +"searchHisReport.xml";
 	}
+
+
+
+	
+	
 	
 }
