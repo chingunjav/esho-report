@@ -87,6 +87,12 @@ public class HistorySearchServiceImpl  {
 		return createdURL + "/searchHisReport.pdf";
 	}
 
+	public String exportAgreement() throws FileNotFoundException, JRException{
+		String createdURL = System.getProperty("user.dir") + "/pdf";
+  		
+		return createdURL + "/SELLER_AGREEMENT_eCommerce.pdf";
+	}
+
 
 
 	

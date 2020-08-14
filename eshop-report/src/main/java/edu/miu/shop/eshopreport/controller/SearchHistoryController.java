@@ -75,4 +75,29 @@ public class SearchHistoryController {
 
 		}
 	}
+	
+	@RequestMapping("/agreement")
+	public void downloadPDFAgreement(HttpServletRequest request, HttpServletResponse response) throws IOException, JRException {
+		File file = new File(hisService.exportAgreement());
+		if (file.exists()) {
+			//get the mimetype
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+	
+			response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+
+			 //Here we have mentioned it to show as attachment
+			 //response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+
+			response.setContentLength((int) file.length());
+
+			BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+
+		}
+	}
 }
